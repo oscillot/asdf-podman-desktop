@@ -79,19 +79,29 @@ install_version() {
   )
 }
 
-uninstall_version() {
-  local install_type="$1"
-  local version="$2"
+uninstall_podman() {
   local install_path="/Applications"
   local app_name="Podman Desktop.app"
   local installed_app="$install_path/$app_name"
 
+  echo "NOTICE: You can only have one version installed at a time. This will uninstall whatever version is present."
+  # get user feedback on what they want to do
+  read -r -p "Do you wish to continue? [y/N] " response
+  case "$response" in
+    [yY][eE][sS] | [yY] | [√] )
+      echo "Uninstalling $TOOL_NAME $version"
+      ;;
+    * )
+      echo "Halting $TOOL_NAME uninstall. No changes have been made."
+      exit 0
+      ;;
+  esac
 
   # even if the app is not installed, we still want to clean up in case there's anything residual from a previous install
   echo "Cleaning up residual files"
 
-  if [[ -e ~"/.asdf/installs/$TOOL_NAME/$version" ]];then
-    rm -rf ~"/.asdf/installs/$TOOL_NAME/$version"
+  if [[ -e ~"/.asdf/installs/$TOOL_NAME" ]];then
+    rm -rf ~"/.asdf/installs/$TOOL_NAME"
   fi
 
   if [[ ! -e $installed_app ]]; then
@@ -107,23 +117,10 @@ uninstall_version() {
   plist_name=$(/usr/libexec/PlistBuddy -c "Print :CFBundleName" "$plist_path")
   plist_version=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" "$plist_path")
 
-  if [[ "$plist_name" == "Podman Desktop" ]] && [[ "$plist_version" == "$version" ]]; then
-    # these ones we move to the trash in case there's anything a user might want to restore
-    # but only if we are really removing the version
-    for config in ~/.local/share/containers/podman-desktop \
-              ~"/Library/Application Support/Podman Desktop" \
-              ~/Library/Preferences/io.podmandesktop.PodmanDesktop.plist \
-              ~"/Library/Saved Application State/io.podmandesktop.PodmanDesktop.savedState"; do
-      if [[ -e $config ]]; then
-        mv "$config" ~/.Trash/
-      fi
-    done
-
+  if [[ "$plist_name" == "Podman Desktop" ]]; then
     rm -rf "$installed_app"
 
     echo "$TOOL_NAME $version removal was successful!"
     exit 0
-  else
-     fail "$TOOL_NAME with version $version not found. Found: $plist_version"
   fi
 }

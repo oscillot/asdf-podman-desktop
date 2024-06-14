@@ -7,5 +7,4 @@ plugin_dir=$(dirname "$(dirname "$current_script_path")")
 
 # shellcheck source=./lib/utils.bash
 source "${plugin_dir}/lib/utils.bash"
-echo $@
-# uninstall_version "version" "$2"
+uninstall_podman
