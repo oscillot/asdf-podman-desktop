@@ -85,7 +85,7 @@ uninstall_version() {
   local app_name="Podman Desktop.app"
   local installed_app="$install_path/$app_name"
 
-  [[ -e $installed_app ]] || return 0
+  [[ -e $installed_app ]] || (echo "$TOOL_NAME not found. Nothing to do!"; return 0)
 
   local plist_path
   local plist_name
@@ -95,12 +95,18 @@ uninstall_version() {
   plist_name=$(/usr/libexec/PlistBuddy -c "Print :CFBundleName" "$plist_path")
   plist_version=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" "$plist_path")
 
-  [[ "$plist_name" == "Podman Desktop" ]] && [[ "$plist_version" == "$version" ]] || return 0
+  if [[ "$plist_name" == "Podman Desktop" ]] && [[ "$plist_version" == "$version" ]]; then
+    rm -rf "$installed_app"
 
-  rm -rf "$installed_app"
+    [[ -e ~/.local/share/containers/podman-desktop ]] && mv ~/.local/share/containers/podman-desktop ~/.Trash/
+    [[ -e ~"/Library/Application Support/Podman Desktop" ]] && mv ~"/Library/Application Support/Podman Desktop" ~/.Trash/
+    [[ -e ~/Library/Preferences/io.podmandesktop.PodmanDesktop.plist ]] && mv ~/Library/Preferences/io.podmandesktop.PodmanDesktop.plist ~/.Trash/
+    [[ -e ~"/Library/Saved Application State/io.podmandesktop.PodmanDesktop.savedState" ]] && mv ~"/Library/Saved Application State/io.podmandesktop.PodmanDesktop.savedState" ~/.Trash/
 
-  mv ~/.local/share/containers/podman-desktop ~/.Trash/
-  mv ~/Library/Application Support/Podman Desktop ~/.Trash/
-  mv ~/Library/Preferences/io.podmandesktop.PodmanDesktop.plist ~/.Trash/
-  mv ~/Library/Saved Application State/io.podmandesktop.PodmanDesktop.savedState ~/.Trash/
+    echo "$TOOL_NAME $version removal was successful!"
+    return 0
+  else
+     echo "$TOOL_NAME with version $version not found. Found: $plist_version"
+     return 1
+  fi
 }
