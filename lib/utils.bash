@@ -77,3 +77,30 @@ install_version() {
     fail "An error occurred while installing $TOOL_NAME $version."
   )
 }
+
+uninstall_version() {
+  local install_type="$1"
+  local version="$2"
+  local install_path="/Applications"
+  local app_name="Podman Desktop.app"
+  local installed_app="$install_path/$app_name"
+
+  [[ -e $installed_app ]] || return 0
+
+  local plist_path
+  local plist_name
+  local plist_version
+
+  plist_path="$installed_app/Contents/Info.plist"
+  plist_name=$(/usr/libexec/PlistBuddy -c "Print :CFBundleName" "$plist_path")
+  plist_version=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" "$plist_path")
+
+  [[ "$plist_name" == "Podman Desktop" ]] && [[ "$plist_version" == "$version" ]] || return 0
+
+  rm -rf "$installed_app"
+
+  mv ~/.local/share/containers/podman-desktop ~/.Trash/
+  mv ~/Library/Application Support/Podman Desktop ~/.Trash/
+  mv ~/Library/Preferences/io.podmandesktop.PodmanDesktop.plist ~/.Trash/
+  mv ~/Library/Saved Application State/io.podmandesktop.PodmanDesktop.savedState ~/.Trash/
+}
