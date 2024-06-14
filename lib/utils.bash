@@ -87,14 +87,13 @@ install_version() {
 
 uninstall_version() {
   local install_type="$1"
-  local version="$ASDF_INSTALL_VERSION"
   local install_path="/Applications"
   local app_name="Podman Desktop.app"
   local installed_app="$install_path/$app_name"
 
   if [[ ! -e $installed_app ]]; then
     echo "$TOOL_NAME not found. Nothing left to do!"
-    exit 0
+    return 0
   fi
 
   local plist_path
@@ -109,35 +108,39 @@ uninstall_version() {
   plist_version=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" "$plist_path")
 
   if [[ "$plist_name" == "Podman Desktop" ]];then
-    if [[ "$plist_version" != "$version" ]]; then
-      echo "NOTICE: You asked to remove $version but $plist_version is installed."
-      echo "        Since you can only have one version installed at a time."
-      echo "        You can continue and uninstall $plist_version or halt now."
+    if [[ "$plist_version" != "$ASDF_INSTALL_VERSION" ]]; then
+      echo "WARNING: $TOOL_NAME with version $ASDF_INSTALL_VERSION not found. Found: $plist_version"
+      echo
+      echo "NOTICE: You asked to remove $ASDF_INSTALL_VERSION but $plist_version is installed."
+      echo "        Since you can only have one version installed at a time,"
+      echo "        you may continue and uninstall $plist_version or halt now."
 
       # get user feedback on what they want to do
-      read -r -p "Do you wish to continue? [y/N] " response
+      read -r -p "Do you wish to continue removing $plist_version? [y/N] " response
       case "$response" in
         [yY][eE][sS] | [yY] | [√] )
+          uninstall_any_version="true"
           ;;
         * )
           echo "Halting $TOOL_NAME uninstall. No changes have been made."
-          exit 0
+          return 0
           ;;
       esac
-    else
-      uninstall_any_version="true"
     fi
 
-    echo "Uninstalling $TOOL_NAME ($app_name $plist_version)..."
+    # The RHS relies on if uninstall_any_version is set true above
+    # So do not combine these two if statements
+    if [[ "$plist_version" == "$ASDF_INSTALL_VERSION" || "$uninstall_any_version" == "true" ]]; then
+      echo "Uninstalling $TOOL_NAME ($app_name $plist_version)..."
 
-    if [[ "$plist_version" == "$version" || "$uninstall_any_version" == "true" ]]; then
-
+      rm -rf "$ASDF_INSTALL_PATH"
       rm -rf "$installed_app"
 
-      echo "$TOOL_NAME $version removal was successful!"
-      exit 0
+      echo "$TOOL_NAME $ASDF_INSTALL_VERSION removal was successful!"
+      return 0
     fi
   else
-     fail "$TOOL_NAME with version $version not found. Found: $plist_version"
+    # you weren't supposed to be able to get here you know
+    fail "Expected to find 'Podman Desktop' in $installed_app/Contents/Info.plist but got $plist_name"
   fi
 }
