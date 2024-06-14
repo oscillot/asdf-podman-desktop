@@ -89,7 +89,7 @@ uninstall_podman() {
   read -r -p "Do you wish to continue? [y/N] " response
   case "$response" in
     [yY][eE][sS] | [yY] | [√] )
-      echo "Uninstalling $TOOL_NAME $version"
+      echo "Uninstalling $TOOL_NAME ($app_name)"
       ;;
     * )
       echo "Halting $TOOL_NAME uninstall. No changes have been made."
