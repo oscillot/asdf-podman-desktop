@@ -85,7 +85,10 @@ uninstall_version() {
   local app_name="Podman Desktop.app"
   local installed_app="$install_path/$app_name"
 
-  [[ -e $installed_app ]] || (echo "$TOOL_NAME not found. Nothing to do!"; return 0)
+  if [[ ! -e $installed_app ]]; then
+    echo "$TOOL_NAME not found. Nothing to do!"
+    exit 0
+  fi
 
   local plist_path
   local plist_name
@@ -104,9 +107,8 @@ uninstall_version() {
     [[ -e ~"/Library/Saved Application State/io.podmandesktop.PodmanDesktop.savedState" ]] && mv ~"/Library/Saved Application State/io.podmandesktop.PodmanDesktop.savedState" ~/.Trash/
 
     echo "$TOOL_NAME $version removal was successful!"
-    return 0
+    exit 0
   else
-     echo "$TOOL_NAME with version $version not found. Found: $plist_version"
-     return 1
+     fail "$TOOL_NAME with version $version not found. Found: $plist_version"
   fi
 }
