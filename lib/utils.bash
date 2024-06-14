@@ -81,14 +81,22 @@ install_version() {
 delete_asdf_install() {
   local version="$1"
 
-  [[ -e ~"/.asdf/installs/$TOOL_NAME/$version" ]] && rm -rf ~"/.asdf/installs/$TOOL_NAME/$version"
+  echo "Cleaning up residual files"
+
+  if [[ -e ~"/.asdf/installs/$TOOL_NAME/$version" ]];then
+    rm -rf ~"/.asdf/installs/$TOOL_NAME/$version"
+  fi
 }
 
 trash_asdf_config() {
-  [[ -e ~/.local/share/containers/podman-desktop ]] && mv ~/.local/share/containers/podman-desktop ~/.Trash/
-  [[ -e ~"/Library/Application Support/Podman Desktop" ]] && mv ~"/Library/Application Support/Podman Desktop" ~/.Trash/
-  [[ -e ~/Library/Preferences/io.podmandesktop.PodmanDesktop.plist ]] && mv ~/Library/Preferences/io.podmandesktop.PodmanDesktop.plist ~/.Trash/
-  [[ -e ~"/Library/Saved Application State/io.podmandesktop.PodmanDesktop.savedState" ]] && mv ~"/Library/Saved Application State/io.podmandesktop.PodmanDesktop.savedState" ~/.Trash/
+  for config in ~/.local/share/containers/podman-desktop \
+                ~"/Library/Application Support/Podman Desktop" \
+                ~/Library/Preferences/io.podmandesktop.PodmanDesktop.plist \
+                ~"/Library/Saved Application State/io.podmandesktop.PodmanDesktop.savedState"; do
+    if [[ -e $config ]]; then
+      mv "$config" ~/.Trash/
+    fi
+  done
 }
 
 uninstall_version() {
@@ -98,7 +106,6 @@ uninstall_version() {
   local app_name="Podman Desktop.app"
   local installed_app="$install_path/$app_name"
 
-  echo "Cleaning up residual files"
 
   # even if the app is not installed, we still want to clean up in case there's anything residual from a previous install
   delete_asdf_install "$version"
