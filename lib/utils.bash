@@ -78,27 +78,6 @@ install_version() {
   )
 }
 
-delete_asdf_install() {
-  local version="$1"
-
-  echo "Cleaning up residual files"
-
-  if [[ -e ~"/.asdf/installs/$TOOL_NAME/$version" ]];then
-    rm -rf ~"/.asdf/installs/$TOOL_NAME/$version"
-  fi
-}
-
-trash_asdf_config() {
-  for config in ~/.local/share/containers/podman-desktop \
-                ~"/Library/Application Support/Podman Desktop" \
-                ~/Library/Preferences/io.podmandesktop.PodmanDesktop.plist \
-                ~"/Library/Saved Application State/io.podmandesktop.PodmanDesktop.savedState"; do
-    if [[ -e $config ]]; then
-      mv "$config" ~/.Trash/
-    fi
-  done
-}
-
 uninstall_version() {
   local install_type="$1"
   local version="$2"
@@ -108,7 +87,11 @@ uninstall_version() {
 
 
   # even if the app is not installed, we still want to clean up in case there's anything residual from a previous install
-  delete_asdf_install "$version"
+  echo "Cleaning up residual files"
+
+  if [[ -e ~"/.asdf/installs/$TOOL_NAME/$version" ]];then
+    rm -rf ~"/.asdf/installs/$TOOL_NAME/$version"
+  fi
 
   if [[ ! -e $installed_app ]]; then
     echo "$TOOL_NAME not found. Nothing left to do!"
@@ -126,7 +109,14 @@ uninstall_version() {
   if [[ "$plist_name" == "Podman Desktop" ]] && [[ "$plist_version" == "$version" ]]; then
     # these ones we move to the trash in case there's anything a user might want to restore
     # but only if we are really removing the version
-    trash_asdf_config
+    for config in ~/.local/share/containers/podman-desktop \
+              ~"/Library/Application Support/Podman Desktop" \
+              ~/Library/Preferences/io.podmandesktop.PodmanDesktop.plist \
+              ~"/Library/Saved Application State/io.podmandesktop.PodmanDesktop.savedState"; do
+      if [[ -e $config ]]; then
+        mv "$config" ~/.Trash/
+      fi
+    done
 
     rm -rf "$installed_app"
 
