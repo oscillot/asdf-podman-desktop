@@ -78,6 +78,19 @@ install_version() {
   )
 }
 
+delete_asdf_install() {
+  local version="$1"
+
+  [[ -e ~"/.asdf/installs/$TOOL_NAME/$version" ]] && rm -rf ~"/.asdf/installs/$TOOL_NAME/$version"
+}
+
+trash_asdf_config() {
+  [[ -e ~/.local/share/containers/podman-desktop ]] && mv ~/.local/share/containers/podman-desktop ~/.Trash/
+  [[ -e ~"/Library/Application Support/Podman Desktop" ]] && mv ~"/Library/Application Support/Podman Desktop" ~/.Trash/
+  [[ -e ~/Library/Preferences/io.podmandesktop.PodmanDesktop.plist ]] && mv ~/Library/Preferences/io.podmandesktop.PodmanDesktop.plist ~/.Trash/
+  [[ -e ~"/Library/Saved Application State/io.podmandesktop.PodmanDesktop.savedState" ]] && mv ~"/Library/Saved Application State/io.podmandesktop.PodmanDesktop.savedState" ~/.Trash/
+}
+
 uninstall_version() {
   local install_type="$1"
   local version="$2"
@@ -85,8 +98,13 @@ uninstall_version() {
   local app_name="Podman Desktop.app"
   local installed_app="$install_path/$app_name"
 
+  echo "Cleaning up residual files"
+
+  # even if the app is not installed, we still want to clean up in case there's anything residual from a previous install
+  delete_asdf_install "$version"
+
   if [[ ! -e $installed_app ]]; then
-    echo "$TOOL_NAME not found. Nothing to do!"
+    echo "$TOOL_NAME not found. Nothing left to do!"
     exit 0
   fi
 
@@ -99,13 +117,11 @@ uninstall_version() {
   plist_version=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" "$plist_path")
 
   if [[ "$plist_name" == "Podman Desktop" ]] && [[ "$plist_version" == "$version" ]]; then
-    rm -rf "$installed_app"
-    rm -rf ~"/.asdf/installs/$TOOL_NAME/$version"
+    # these ones we move to the trash in case there's anything a user might want to restore
+    # but only if we are really removing the version
+    trash_asdf_config
 
-    [[ -e ~/.local/share/containers/podman-desktop ]] && mv ~/.local/share/containers/podman-desktop ~/.Trash/
-    [[ -e ~"/Library/Application Support/Podman Desktop" ]] && mv ~"/Library/Application Support/Podman Desktop" ~/.Trash/
-    [[ -e ~/Library/Preferences/io.podmandesktop.PodmanDesktop.plist ]] && mv ~/Library/Preferences/io.podmandesktop.PodmanDesktop.plist ~/.Trash/
-    [[ -e ~"/Library/Saved Application State/io.podmandesktop.PodmanDesktop.savedState" ]] && mv ~"/Library/Saved Application State/io.podmandesktop.PodmanDesktop.savedState" ~/.Trash/
+    rm -rf "$installed_app"
 
     echo "$TOOL_NAME $version removal was successful!"
     exit 0
