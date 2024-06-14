@@ -92,13 +92,6 @@ uninstall_version() {
   local app_name="Podman Desktop.app"
   local installed_app="$install_path/$app_name"
 
-  # even if the app is not installed, we still want to clean up in case there's anything residual from a previous install
-  echo "Cleaning up residual files"
-
-  if [[ -e ~"/.asdf/installs/$TOOL_NAME/$version" ]];then
-    rm -rf ~"/.asdf/installs/$TOOL_NAME/$version"
-  fi
-
   if [[ ! -e $installed_app ]]; then
     echo "$TOOL_NAME not found. Nothing left to do!"
     exit 0
