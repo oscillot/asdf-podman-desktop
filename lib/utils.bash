@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 set -euo pipefail
-set -x
 
 GH_REPO="https://github.com/containers/podman-desktop"
 TOOL_NAME="podman-desktop"
@@ -79,10 +78,15 @@ install_version() {
   )
 }
 
-uninstall_podman() {
+trash_podman_app() {
   local install_path="/Applications"
   local app_name="Podman Desktop.app"
   local installed_app="$install_path/$app_name"
+
+  if [[ ! -e $installed_app ]]; then
+    echo "$TOOL_NAME not found. Are you sure it is installed?"
+    exit 0
+  fi
 
   echo "NOTICE: You can only have one version installed at a time. This will uninstall whatever version is present."
   # get user feedback on what they want to do
@@ -97,18 +101,6 @@ uninstall_podman() {
       ;;
   esac
 
-  # even if the app is not installed, we still want to clean up in case there's anything residual from a previous install
-  echo "Cleaning up residual files"
-
-  if [[ -e ~"/.asdf/installs/$TOOL_NAME" ]];then
-    rm -rf ~"/.asdf/installs/$TOOL_NAME"
-  fi
-
-  if [[ ! -e $installed_app ]]; then
-    echo "$TOOL_NAME not found. Nothing left to do!"
-    exit 0
-  fi
-
   local plist_path
   local plist_name
   local plist_version
@@ -118,9 +110,9 @@ uninstall_podman() {
   plist_version=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" "$plist_path")
 
   if [[ "$plist_name" == "Podman Desktop" ]]; then
-    rm -rf "$installed_app"
+    mv "$installed_app" ~"/.Trash/$app_name"
 
-    echo "$TOOL_NAME $version removal was successful!"
+    echo "Removed $TOOL_NAME ($app_name $version) removal was successful!"
     exit 0
   fi
 }
