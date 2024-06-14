@@ -110,7 +110,7 @@ trash_podman_app() {
   plist_version=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" "$plist_path")
 
   if [[ "$plist_name" == "Podman Desktop" ]]; then
-    mv "$installed_app" ~"/.Trash/$app_name"
+    mv "$installed_app" ~"/.Trash/"
 
     echo "Removed $TOOL_NAME ($app_name $version) removal was successful!"
     exit 0
