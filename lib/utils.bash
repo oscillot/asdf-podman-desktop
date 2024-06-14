@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -euo pipefail
+set -x
 
 GH_REPO="https://github.com/containers/podman-desktop"
 TOOL_NAME="podman-desktop"
