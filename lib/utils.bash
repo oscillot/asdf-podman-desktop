@@ -88,7 +88,7 @@ delete_podman_app() {
     exit 0
   fi
 
-  echo "NOTICE: You can only have one version installed at a time. This will uninstall whatever version is present."
+  echo "NOTICE: You can (should*) only have one version installed at a time. This will uninstall ANY version present."
   # get user feedback on what they want to do
   read -r -p "Do you wish to continue? [y/N] " response
   case "$response" in
@@ -110,9 +110,9 @@ delete_podman_app() {
   plist_version=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" "$plist_path")
 
   if [[ "$plist_name" == "Podman Desktop" ]]; then
-    rm -rf "$installed_app" ~"/.Trash/"
+    rm -rf "$installed_app"
 
-    echo "Removed $TOOL_NAME ($app_name $plist_version) removal was successful!"
+    echo "Removal of $TOOL_NAME ($app_name $plist_version) successful!"
     exit 0
   fi
 }
