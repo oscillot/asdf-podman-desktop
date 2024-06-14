@@ -15,4 +15,4 @@ source "${plugin_dir}/lib/utils.bash"
 # ASDF_INSTALL_VERSION=1.10.3
 # are available
 
-delete_podman_app
+uninstall_version "$ASDF_INSTALL_TYPE" "$ASDF_INSTALL_VERSION"
