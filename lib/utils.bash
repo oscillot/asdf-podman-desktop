@@ -100,6 +100,7 @@ uninstall_version() {
 
   if [[ "$plist_name" == "Podman Desktop" ]] && [[ "$plist_version" == "$version" ]]; then
     rm -rf "$installed_app"
+    rm -rf ~"/.asdf/installs/$TOOL_NAME/$version"
 
     [[ -e ~/.local/share/containers/podman-desktop ]] && mv ~/.local/share/containers/podman-desktop ~/.Trash/
     [[ -e ~"/Library/Application Support/Podman Desktop" ]] && mv ~"/Library/Application Support/Podman Desktop" ~/.Trash/
