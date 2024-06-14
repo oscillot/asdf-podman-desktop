@@ -112,7 +112,7 @@ delete_podman_app() {
   if [[ "$plist_name" == "Podman Desktop" ]]; then
     rm -rf "$installed_app" ~"/.Trash/"
 
-    echo "Removed $TOOL_NAME ($app_name $version) removal was successful!"
+    echo "Removed $TOOL_NAME ($app_name $plist_version) removal was successful!"
     exit 0
   fi
 }
