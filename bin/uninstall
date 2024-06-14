@@ -8,8 +8,11 @@ plugin_dir=$(dirname "$(dirname "$current_script_path")")
 # shellcheck source=./lib/utils.bash
 source "${plugin_dir}/lib/utils.bash"
 
-echo "^^^^^^^^"
-env | sort
-echo '$$$$$$$$$'
+# the docs say that no env vars are provided but I can see:
+# ASDF_DIR=/opt/homebrew/opt/asdf/libexec
+# ASDF_INSTALL_PATH=/Users/PJ.Sernatinger/.asdf/installs/podman-desktop/1.10.3
+# ASDF_INSTALL_TYPE=version
+# ASDF_INSTALL_VERSION=1.10.3
+# are available
 
 delete_podman_app
