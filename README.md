@@ -1,5 +1,7 @@
 <div align="center">
 
+Apologies in advance, this is a macos only plugin. It uses [banned commands](https://github.com/asdf-vm/asdf/blob/master/test/banned_commands.bats). It exists because it solves my today problem right now. It's not intended for you to use, you are not the audience. However, it's here if you want it.
+
 # asdf-podman-desktop [![Build](https://github.com/oscillot/asdf-podman-desktop/actions/workflows/build.yml/badge.svg)](https://github.com/oscillot/asdf-podman-desktop/actions/workflows/build.yml) [![Lint](https://github.com/oscillot/asdf-podman-desktop/actions/workflows/lint.yml/badge.svg)](https://github.com/oscillot/asdf-podman-desktop/actions/workflows/lint.yml)
 
 [podman-desktop](https://github.com/oscillot/asdf-podman-desktop) plugin for the [asdf version manager](https://asdf-vm.com).
