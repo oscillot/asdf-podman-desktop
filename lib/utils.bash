@@ -133,8 +133,9 @@ uninstall_version() {
     if [[ "$plist_version" == "$ASDF_INSTALL_VERSION" || "$uninstall_any_version" == "true" ]]; then
       echo "Uninstalling $TOOL_NAME ($app_name $plist_version)..."
 
-      # rm -rf "$ASDF_INSTALL_PATH"
       rm -rf "$installed_app"
+      # and any other version info bc again, only 1 version can exist
+      rm -rf "/Users/PJ.Sernatinger/.asdf/installs/podman-desktop"
 
       echo "$TOOL_NAME $ASDF_INSTALL_VERSION removal was successful!"
       return 0
