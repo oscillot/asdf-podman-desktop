@@ -60,7 +60,7 @@ install_version() {
 
   (
 
-    find ~/.asdf/installs/podman-desktop -type d -depth 1 | grep -vF "$version" ~/.asdf/installs/podman-desktop | xargs rm -rf
+    find ~/.asdf/installs/podman-desktop -type d -depth 1 | grep -vF "$version" | xargs rm -rf
     cp -r "$ASDF_DOWNLOAD_PATH/$app_name" "$installed_app"
 
     local plist_path
