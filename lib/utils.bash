@@ -74,7 +74,7 @@ install_version() {
 
     [[ "$plist_name" == "Podman Desktop" ]] && [[ "$plist_version" == "$version" ]]
 
-    echo "$TOOL_NAME $version installation was successful!"
+    echo "$TOOL_NAME $version successfully installed to ${HOME-/Users/$(whoami)}/Applications/$app_name!"
   ) || (
     rm -rf "$install_path"
     fail "An error occurred while installing $TOOL_NAME $version."
