@@ -51,7 +51,7 @@ download_release() {
 install_version() {
   local install_type="$1"
   local version="$2"
-  local install_path="${HOME:-/Users/$(whoami)}/Applications"
+  local install_path="/Applications"
   local app_name="Podman Desktop.app"
   local installed_app="$install_path/$app_name"
 
@@ -62,7 +62,7 @@ install_version() {
   (
 
     find ~/.asdf/installs/podman-desktop -type d -depth 1 | grep -vF "$version" | xargs rm -rf
-    cp -r "$ASDF_DOWNLOAD_PATH/$app_name" "$installed_app"
+    cp -R "$ASDF_DOWNLOAD_PATH/$app_name" "$installed_app"
 
     local plist_path
     local plist_name
@@ -74,7 +74,7 @@ install_version() {
 
     [[ "$plist_name" == "Podman Desktop" ]] && [[ "$plist_version" == "$version" ]]
 
-    echo "$TOOL_NAME $version successfully installed to ${HOME-/Users/$(whoami)}/Applications/$app_name!"
+    echo "$TOOL_NAME $version installation was successful!"
   ) || (
     rm -rf "$install_path"
     fail "An error occurred while installing $TOOL_NAME $version."
@@ -90,7 +90,7 @@ install_version() {
 
 uninstall_version() {
   local install_type="$1"
-  local install_path="${HOME:-/Users/$(whoami)}/Applications"
+  local install_path="/Applications"
   local app_name="Podman Desktop.app"
   local installed_app="$install_path/$app_name"
 
