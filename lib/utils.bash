@@ -94,6 +94,9 @@ uninstall_version() {
   local app_name="Podman Desktop.app"
   local installed_app="$install_path/$app_name"
 
+  # delete any version info bc only 1 version can exist
+  rm -rf ~/.asdf/installs/podman-desktop
+
   if [[ ! -e $installed_app ]]; then
     echo "$TOOL_NAME not found. Nothing left to do!"
     return 0
@@ -110,8 +113,6 @@ uninstall_version() {
   if [[ "$plist_name" == "Podman Desktop" ]];then
     echo "Uninstalling $TOOL_NAME ($app_name)..."
     rm -rf "$installed_app"
-    # and any other version info bc again, only 1 version can exist
-    rm -rf ~/.asdf/installs/podman-desktop
 
     echo "$TOOL_NAME $ASDF_INSTALL_VERSION removal was successful!"
     return 0
