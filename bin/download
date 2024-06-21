@@ -20,5 +20,5 @@ hdiutil attach "$release_file"
 mount_path="/Volumes/Podman Desktop $ASDF_INSTALL_VERSION-universal"
 
 # "unpack" the dmg
-cp -rf "$mount_path/Podman Desktop.app" "$ASDF_DOWNLOAD_PATH"
+cp -Rf "$mount_path/Podman Desktop.app" "$ASDF_DOWNLOAD_PATH"
 hdiutil detach "$mount_path"
