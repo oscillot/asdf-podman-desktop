@@ -59,6 +59,8 @@ install_version() {
   fi
 
   (
+
+    find ~/.asdf/installs/podman-desktop -type d -depth 1 | grep -vF "$version" ~/.asdf/installs/podman-desktop | xargs rm -rf
     cp -r "$ASDF_DOWNLOAD_PATH/$app_name" "$installed_app"
 
     local plist_path
@@ -80,7 +82,7 @@ install_version() {
 
 # the docs say that no env vars are provided but I can see:
 # ASDF_DIR=/opt/homebrew/opt/asdf/libexec
-# ASDF_INSTALL_PATH=/Users/PJ.Sernatinger/.asdf/installs/podman-desktop/1.10.3
+# ASDF_INSTALL_PATH=~/.asdf/installs/podman-desktop/1.10.3
 # ASDF_INSTALL_TYPE=version
 # ASDF_INSTALL_VERSION=1.10.3
 # are available
@@ -135,7 +137,7 @@ uninstall_version() {
 
       rm -rf "$installed_app"
       # and any other version info bc again, only 1 version can exist
-      rm -rf "/Users/PJ.Sernatinger/.asdf/installs/podman-desktop"
+      rm -rf ~/.asdf/installs/podman-desktop
 
       echo "$TOOL_NAME $ASDF_INSTALL_VERSION removal was successful!"
       return 0
