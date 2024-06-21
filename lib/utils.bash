@@ -101,47 +101,19 @@ uninstall_version() {
   local plist_path
   local plist_name
   local plist_version
-  local uninstall_any_version
-
-  uninstall_any_version="false"
 
   plist_path="$installed_app/Contents/Info.plist"
   plist_name=$(/usr/libexec/PlistBuddy -c "Print :CFBundleName" "$plist_path")
   plist_version=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" "$plist_path")
 
   if [[ "$plist_name" == "Podman Desktop" ]];then
-    if [[ "$plist_version" != "$ASDF_INSTALL_VERSION" ]]; then
-      echo "WARNING: $TOOL_NAME with version $ASDF_INSTALL_VERSION not found. Found: $plist_version"
-      echo
-      echo "NOTICE: You asked to remove $ASDF_INSTALL_VERSION but $plist_version is installed."
-      echo "        Since you can only have one version installed at a time,"
-      echo "        you may continue and uninstall $plist_version or halt now."
+    echo "Uninstalling $TOOL_NAME ($app_name)..."
+    rm -rf "$installed_app"
+    # and any other version info bc again, only 1 version can exist
+    rm -rf ~/.asdf/installs/podman-desktop
 
-      # get user feedback on what they want to do
-      read -r -p "Do you wish to continue removing $plist_version? [y/N] " response
-      case "$response" in
-        [yY][eE][sS] | [yY] | [√] )
-          uninstall_any_version="true"
-          ;;
-        * )
-          echo "Halting $TOOL_NAME uninstall. No changes have been made."
-          return 0
-          ;;
-      esac
-    fi
-
-    # The RHS relies on if uninstall_any_version is set true above
-    # So do not combine these two if statements
-    if [[ "$plist_version" == "$ASDF_INSTALL_VERSION" || "$uninstall_any_version" == "true" ]]; then
-      echo "Uninstalling $TOOL_NAME ($app_name $plist_version)..."
-
-      rm -rf "$installed_app"
-      # and any other version info bc again, only 1 version can exist
-      rm -rf ~/.asdf/installs/podman-desktop
-
-      echo "$TOOL_NAME $ASDF_INSTALL_VERSION removal was successful!"
-      return 0
-    fi
+    echo "$TOOL_NAME $ASDF_INSTALL_VERSION removal was successful!"
+    return 0
   else
     # you weren't supposed to be able to get here you know
     fail "Expected to find 'Podman Desktop' in $installed_app/Contents/Info.plist but got $plist_name"
