@@ -51,7 +51,7 @@ download_release() {
 install_version() {
   local install_type="$1"
   local version="$2"
-  local install_path="/Applications"
+  local install_path="${HOME:-/Users/$(whoami)}/Applications"
   local app_name="Podman Desktop.app"
   local installed_app="$install_path/$app_name"
 
@@ -90,7 +90,7 @@ install_version() {
 
 uninstall_version() {
   local install_type="$1"
-  local install_path="/Applications"
+  local install_path="${HOME:-/Users/$(whoami)}/Applications"
   local app_name="Podman Desktop.app"
   local installed_app="$install_path/$app_name"
 
