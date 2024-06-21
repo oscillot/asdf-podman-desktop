@@ -133,7 +133,7 @@ uninstall_version() {
     if [[ "$plist_version" == "$ASDF_INSTALL_VERSION" || "$uninstall_any_version" == "true" ]]; then
       echo "Uninstalling $TOOL_NAME ($app_name $plist_version)..."
 
-      rm -rf "$ASDF_INSTALL_PATH"
+      # rm -rf "$ASDF_INSTALL_PATH"
       rm -rf "$installed_app"
 
       echo "$TOOL_NAME $ASDF_INSTALL_VERSION removal was successful!"
